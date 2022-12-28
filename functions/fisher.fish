@@ -41,7 +41,7 @@ function fisher --argument-names cmd --description "A plugin manager for Fish"
             end
 
             for plugin in $arg_plugins
-                set plugin (test -e "$plugin" && realpath $plugin || string lower -- $plugin)
+                set plugin (test -e "$plugin" && realpath $plugin | string escape || string lower -- $plugin)
                 contains -- "$plugin" $new_plugins || set --append new_plugins $plugin
             end
 
@@ -83,8 +83,8 @@ function fisher --argument-names cmd --description "A plugin manager for Fish"
                 command mkdir -p $source/{completions,conf.d,themes,functions}
 
                 $fish_path --command "
-                    if test -e $plugin
-                        command cp -Rf $plugin/* $source
+                    if test -e "$plugin"
+                            command cp -Rf "$plugin"/* $source
                     else
                         set temp (command mktemp -d)
                         set repo (string split -- \@ $plugin) || set repo[2] HEAD
